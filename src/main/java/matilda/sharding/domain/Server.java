@@ -10,10 +10,10 @@ public class Server {
     @Id
     private String serverIp;
     private String cpu;
-    private double volume;
+    private String volume;
     boolean isRunning;
 
-    public Server(String serverIp, String cpu, double volume, boolean isRunning) {
+    public Server(String serverIp, String cpu, String volume, boolean isRunning) {
         this.serverIp = serverIp;
         this.cpu = cpu;
         this.volume = volume;

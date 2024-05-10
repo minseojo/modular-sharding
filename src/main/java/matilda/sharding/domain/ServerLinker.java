@@ -5,12 +5,13 @@ import jakarta.persistence.*;
 @Entity(name = "server_linkers")
 public class ServerLinker {
 
-    @Id
+    @Id @GeneratedValue
+    private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "server_ip")
     private Server server;
 
-    @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "linker_id")
     private Linker linker;

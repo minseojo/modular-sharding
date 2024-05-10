@@ -13,7 +13,7 @@ public class Linker {
     @JoinColumn(name = "user_id")
     private User user;
 
-    protected Linker() {
+    public Linker() {
     }
 
     public Linker(Long linkerId, User user) {

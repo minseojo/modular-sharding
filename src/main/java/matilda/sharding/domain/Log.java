@@ -7,11 +7,18 @@ import lombok.Getter;
 @Getter
 public class Log {
 
-    @Id
+    @Id @GeneratedValue
     private Long logId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "linker_id")
     private Linker linker;
-    protected Log() {
+
+    public Log(Linker linker) {
+//        this.logId = logId;
+        this.linker = linker;
+    }
+
+    public Log() {
+
     }
 }
