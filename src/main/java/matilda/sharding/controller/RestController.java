@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Random;
 
 @org.springframework.web.bind.annotation.RestController
 @RequiredArgsConstructor
@@ -64,7 +65,18 @@ public class RestController {
         for (int i = 1; i <= logCount; i++) {
             logRepository.findById((long) i);
         }
+        return "ok";
+    }
 
+    @GetMapping("/select/random/{logCount}")
+    public String selectRandom(@PathVariable("logCount") int logCount) {
+        Random random = new Random();
+        log.info("select 작업 실행 : {}개의 로그 랜덤 조회", logCount);
+
+        for (int i = 1; i <= logCount; i++) {
+            long randomIndex= random.nextLong(logCount) + 1;
+            logRepository.findById(randomIndex);
+        }
         return "ok";
     }
 
