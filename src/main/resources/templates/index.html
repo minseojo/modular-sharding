@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>홈 화면</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .time-display {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<div>
+    <div>
+        <h2>삽입 - insert into</h2>
+        <div style="display: flex;">
+            <button id="insert10">사용자 10명 추가</button>
+            <button id="insert100">사용자 100명 추가</button>
+            <button id="insert1000">사용자 1,000명 추가</button>
+        </div>
+        <div class="time-display" id="insert-time"></div>
+    </div>
+
+    <div>
+        <h2>조회 - select</h2>
+        <div style="display: flex;">
+            <button id="select10">로그 10개 조회</button>
+            <button id="select100">로그 100개 조회</button>
+            <button id="select1000">로그 1,000개 조회</button>
+            <button id="select10000">로그 10,000개 조회</button>
+            <button id="select100000">로그 100,000개 조회</button>
+            <button id="select1000000">로그 1,000,000개 조회</button>
+        </div>
+        <div class="time-display" id="select-time"></div>
+    </div>
+
+</div>
+
+<script>
+    function simulateApiCall(durationMs) {
+        return new Promise(resolve => setTimeout(resolve, durationMs));
+    }
+
+    async function handleInsert(userCount) {
+        const startTime = performance.now();
+        // 서버의 /insert 엔드포인트 호출
+        let url = `/insert/${userCount}`;
+        try {
+            const response = await fetch(url, { method: 'GET' });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.text(); // 또는 json() 등을 사용하여 데이터 파싱
+            console.log(data); // 서버 응답 로그 출력
+        } catch (error) {
+            console.error('Error fetching data: ', error);
+            document.getElementById('insert-time').textContent = `삽입 ${userCount}: 실패`;
+            return;
+        }
+        const endTime = performance.now();
+        const timeTaken = endTime - startTime;
+        document.getElementById('insert-time').textContent = `삽입 ${userCount}: ${timeTaken.toFixed(2)}ms`;
+    }
+
+    async function handleSelect(logCount) {
+        const startTime = performance.now();
+        // 서버의 /select 엔드포인트 호출
+        let url = `/select/sequence/${logCount}`;
+        try {
+            const response = await fetch(url, { method: 'GET' });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.text(); // 또는 json() 등을 사용하여 데이터 파싱
+            console.log(data); // 서버 응답 로그 출력
+        } catch (error) {
+            console.error('Error fetching data: ', error);
+            document.getElementById('select-time').textContent = `조회 ${logCount}: 실패`;
+            return;
+        }
+        const endTime = performance.now();
+        const timeTaken = endTime - startTime;
+
+        document.getElementById('select-time').textContent = `조회 ${logCount}: ${timeTaken.toFixed(2)}ms`;
+    }
+
+    document.getElementById('insert10').addEventListener('click', () => handleInsert(10));
+    document.getElementById('insert100').addEventListener('click', () => handleInsert(100));
+    document.getElementById('insert1000').addEventListener('click', () => handleInsert(1000));
+
+    document.getElementById('select10').addEventListener('click', () => handleSelect(10));
+    document.getElementById('select100').addEventListener('click', () => handleSelect(100));
+    document.getElementById('select1000').addEventListener('click', () => handleSelect(1000));
+    document.getElementById('select1000').addEventListener('click', () => handleSelect(10000));
+    document.getElementById('select10000').addEventListener('click', () => handleSelect(100000));
+    document.getElementById('select100000').addEventListener('click', () => handleSelect(1000000));
+</script>
+
+</body>
+</html>

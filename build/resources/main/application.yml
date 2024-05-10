@@ -21,7 +21,7 @@ spring:
 #    maximum-pool-size: 10
   jpa:
       hibernate:
-        ddl-auto: create
+        ddl-auto: update
       properties:
         hibernate:
           dialect: org.hibernate.dialect.MySQLDialect
