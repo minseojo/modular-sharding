@@ -21,6 +21,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class RestController {
+    @Qualifier("salin07JdbcTemplate")
+    private final JdbcTemplate salin07JdbcTemplate;
+
+    @Qualifier("salin08JdbcTemplate")
+    private final JdbcTemplate salin08JdbcTemplate;
 
     @Qualifier("salin09JdbcTemplate")
     private final JdbcTemplate salin09JdbcTemplate;
@@ -44,6 +49,8 @@ public class RestController {
     @GetMapping("/init")
     public String init() {
         for (int i = 2; i < 10; i++) {
+            salin07JdbcTemplate.update(userInsertSql, i);
+            salin08JdbcTemplate.update(userInsertSql, i);
             salin09JdbcTemplate.update(userInsertSql, i);
             salin10JdbcTemplate.update(userInsertSql, i);
 //            salin09JdbcTemplate.update(serverInsertSql, "172.16.5" + i);
