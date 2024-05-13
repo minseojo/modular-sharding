@@ -27,7 +27,7 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="salin08" uuid="91fb5f21-f412-4619-876f-682911b67da3">
+    <data-source source="LOCAL" name="salin07" uuid="542b64e9-cdbc-4435-b34b-6ffb78243302">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
@@ -40,14 +40,15 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="salin07" uuid="542b64e9-cdbc-4435-b34b-6ffb78243302">
+    <data-source source="LOCAL" name="salin08" uuid="c03fe5d7-97fb-44fa-bc94-e63cd2ebd903">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://172.16.5.236:3306</jdbc-url>
+      <jdbc-url>jdbc:mysql://172.16.5.237:3306</jdbc-url>
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.host.port" />
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
+        <property name="com.intellij.clouds.kubernetes.db.resource.type" value="Deployment" />
         <property name="com.intellij.clouds.kubernetes.db.container.port" />
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
