@@ -160,7 +160,7 @@ public class RestController {
     @GetMapping("/select/userForLogType/{type}")
     public String selectUserForLog(@PathVariable String type) {
 
-        String sql = "SELECT * " +
+        String sql = "SELECT user_id " +
                 " FROM (select user_id from logs join linkers using(linker_id)" +
                 " where log_type = ?) T join users U using (user_id)";
         long startTime = System.currentTimeMillis();
@@ -177,7 +177,7 @@ public class RestController {
     @GetMapping("/select/logForUser/{userId}")
     public String selectLogForUser(@PathVariable("userId") int userId) {
 
-        String sql = "select * from (select linker_id from linkers join users using(user_id) " +
+        String sql = "select log_id from (select linker_id from linkers join users using(user_id) " +
                 " where user_id = ?) as LU" +
                 " join logs using(linker_id)";
         long startTime = System.currentTimeMillis();

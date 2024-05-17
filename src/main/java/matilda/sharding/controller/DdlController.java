@@ -7,10 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.file.attribute.UserPrincipal;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @RestController
@@ -85,6 +88,51 @@ public class DdlController {
 //        }
 
         return "init linkers and users table";
+    }
+
+    /**
+     * 샤드키에 따른 로그, 링커 데이터 분배
+     */
+    @GetMapping("/init/shard-key")
+    public String distributeShardKeyData() {
+        int shardKey = 3;
+
+        String logSql = "select * from logs";
+        String linkerSql = "select * from linkers";
+
+        List<Map<String, Object>> logs = salin08JdbcTemplate.queryForList(logSql);
+        List<Map<String, Object>> linkers = salin08JdbcTemplate.queryForList(linkerSql);
+
+        String logInsertSql = "insert into logs(log_id, linker_id, log_type, message, created_at) values(?, ?, ?, ?, ?)";
+        String linkerInsertSql = "insert into linkers values(?, ?)";
+        for (Map<String, Object> map : logs) {
+            int log_id = (int) map.get("log_id");
+            int linker_id = (int) map.get("linker_id");
+            String log_type = (String) map.get("log_type");
+            String message = (String) map.get("message");
+            Timestamp created_at = (Timestamp) map.get("created_at");
+            if (linker_id % shardKey == 0) {
+                salin07JdbcTemplate.update(logInsertSql, log_id, linker_id, log_type, message, created_at);
+            } else if (linker_id % shardKey == 1) {
+                salin09JdbcTemplate.update(logInsertSql, log_id, linker_id, log_type, message, created_at);
+            } else if (linker_id % shardKey == 2) {
+                salin10JdbcTemplate.update(logInsertSql, log_id, linker_id, log_type, message, created_at);
+            }
+        }
+
+        for (Map<String, Object> map : linkers) {
+            int user_id = (int) map.get("user_id");
+            int linker_id = (int) map.get("linker_id");
+            if (linker_id % shardKey == 0) {
+                salin07JdbcTemplate.update(linkerInsertSql, linker_id, user_id);
+            } else if (linker_id % shardKey == 1) {
+                salin09JdbcTemplate.update(linkerInsertSql, linker_id, user_id);
+            } else if (linker_id % shardKey == 2) {
+                salin10JdbcTemplate.update(linkerInsertSql, linker_id, user_id);
+            }
+        }
+
+        return "ok";
     }
 
 }
