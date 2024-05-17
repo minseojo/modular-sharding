@@ -89,61 +89,108 @@ public class RestController {
 
 
     /**
-     * sequence access [a ~ b]
+     * 순차 접근 [에이, 비]
+     * 에스큐엘 *, 로그 아이디 본인이 설정
      */
     @GetMapping("/select/sequence/{a}/{b}")
     public String selectSequence(@PathVariable("a") int a, @PathVariable("b") int b) {
         double diffTime = 0;
+        String sql = "select * from logs where log_id between ? and ?";
+        // user 200
+        // linker 1000
+        // server 4000
+        // log
+        double startTIme = System.currentTimeMillis();
 
-        for (int testCase = 0; testCase < 25; testCase++) {
-            String sql = "select user_id from users where user_id between ? and ?";
-            long startTIme = System.currentTimeMillis();
-            salin07JdbcTemplate.queryForList(sql, new Object[]{a, b});
-            salin09JdbcTemplate.queryForList(sql, new Object[]{a, b});
-            long endTIme = System.currentTimeMillis();
-            diffTime += (endTIme - startTIme);
-        }
-        return String.valueOf(diffTime / 100);
+//        salin07JdbcTemplate.queryForList(sql, new Object[]{a, b});
+//        salin09JdbcTemplate.queryForList(sql, new Object[]{a, b});
+        double endTIme = System.currentTimeMillis();
+        diffTime += (endTIme - startTIme);
+        return String.valueOf(diffTime);
     }
 
     /**
-     * random access (count = {count})
+     * 스타트, 엔드 시간 범위에 대해 조회하기
+     * *, 로그 아이디 에스큐엘은 본인이 다시 쓰기
      */
-    @GetMapping("/select/random/{count}")
-    public String selectRandom(@PathVariable("count") int count) {
+    @GetMapping("/select/sequence/created-at/{start}/{end}")
+    public String selectSequence(@PathVariable("start") String start, @PathVariable("end") String end) {
+        double diffTime = 0;
+        // 2024-05-14 02:35:00
+        // 2024-05-14 02:36:00
+        System.out.println(start);
+        System.out.println(end);
+
+        String sql = "select * from logs where created_at between ? and ?";
+        double startTIme = System.currentTimeMillis();
+        salin07JdbcTemplate.queryForList(sql, new Object[]{start, end});
+        salin09JdbcTemplate.queryForList(sql, new Object[]{start, end});
+        double endTIme = System.currentTimeMillis();
+        diffTime += (endTIme - startTIme);
+        return String.valueOf(diffTime);
+    }
+
+    /**
+     * 로그 테이블에서 해당 링커 아이디에 대한 정보 가져오기
+     * 에스큐엘 *, 로그 아이디는 본인이 바꾸기
+     */
+    @GetMapping("/select/random/linker")
+    public String selectIndexRandom() {
+
         double diffTime = 0.0;
-        String sql = "select user_id from users where user_id = ?";
+        String sql = "select * from logs where linker_id = ?";
         long startTIme = System.currentTimeMillis();
         long endTIme = 0;
-                Random random = new Random();
-        for (int i = 0; i < count; i++) {
-            long value = random.nextInt(count) + 1;
-            salin07JdbcTemplate.queryForList(sql, value);
-            salin09JdbcTemplate.queryForList(sql, value);
-            endTIme = System.currentTimeMillis();
+        Random random = new Random();
+
+        long randomLinkerId = random.nextInt(2500) + 1;
+        if (randomLinkerId % 2 == 1) {
+            salin07JdbcTemplate.queryForList(sql, randomLinkerId);
+        } else {
+            salin09JdbcTemplate.queryForList(sql, randomLinkerId);
         }
+
+        endTIme = System.currentTimeMillis();
         diffTime = (endTIme - startTIme);
         return String.valueOf(diffTime);
     }
 
 
-    @GetMapping("/select/usersForLinker/{a}/{b}")
-    public String selectUserForLinker(@PathVariable("a") int a, @PathVariable("b") int b) {
-        String sql = "SELECT linker_id, COUNT(*) FROM linkers JOIN users USING(user_id) " +
-                "WHERE linker_id BETWEEN ? AND ? " +
-                "GROUP BY linker_id";
+
+    @GetMapping("/select/userForLogType/{type}")
+    public String selectUserForLog(@PathVariable String type) {
+
+        String sql = "SELECT * " +
+                " FROM (select user_id from logs join linkers using(linker_id)" +
+                " where log_type = ?) T join users U using (user_id)";
         long startTime = System.currentTimeMillis();
 
-        for (int i = 0; i < 25; i++) {
-            List<Map<String, Object>> result07 = salin07JdbcTemplate.queryForList(sql, a, b);
-            List<Map<String, Object>> result09 = salin09JdbcTemplate.queryForList(sql, a, b);
-            System.out.printf(result07.toString());
-        }
+
+        salin07JdbcTemplate.queryForList(sql, type);
+        salin09JdbcTemplate.queryForList(sql, type);
 
         long endTime = System.currentTimeMillis();
-        double diffTime = (endTime - startTime) / 25.0; // 각 쿼리 실행 시간의 평균을 계산
+        double diffTime = (endTime - startTime);// 각 쿼리 실행 시간의 평균을 계산
         return String.valueOf(diffTime);
     }
+
+    @GetMapping("/select/logForUser/{userId}")
+    public String selectLogForUser(@PathVariable("userId") int userId) {
+
+        String sql = "select * from (select linker_id from linkers join users using(user_id) " +
+                " where user_id = ?) as LU" +
+                " join logs using(linker_id)";
+        long startTime = System.currentTimeMillis();
+
+        salin07JdbcTemplate.queryForList(sql, userId);
+        salin09JdbcTemplate.queryForList(sql, userId);
+
+        long endTime = System.currentTimeMillis();
+        double diffTime = (endTime - startTime);
+        return String.valueOf(diffTime);
+    }
+
+
 
 
 //
