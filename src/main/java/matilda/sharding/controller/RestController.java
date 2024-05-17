@@ -25,14 +25,14 @@ public class RestController {
     @Qualifier("salin07JdbcTemplate")
     private final JdbcTemplate salin07JdbcTemplate;
 
-//    @Qualifier("salin08JdbcTemplate")
-//    private final JdbcTemplate salin08JdbcTemplate;
+    @Qualifier("salin08JdbcTemplate")
+    private final JdbcTemplate salin08JdbcTemplate;
 
     @Qualifier("salin09JdbcTemplate")
     private final JdbcTemplate salin09JdbcTemplate;
 
-//    @Qualifier("salin10JdbcTemplate")
-//    private final JdbcTemplate salin10JdbcTemplate;
+    @Qualifier("salin10JdbcTemplate")
+    private final JdbcTemplate salin10JdbcTemplate;
 
     static String userInsertSql = "Insert into users(user_id, username, password) values(?, 'qwer1234', 'qwer1234')";
     static String serverInsertSql = "Insert into servers values(?, '8gb', '512gb', true)";
@@ -96,14 +96,12 @@ public class RestController {
     public String selectSequence(@PathVariable("a") int a, @PathVariable("b") int b) {
         double diffTime = 0;
         String sql = "select * from logs where log_id between ? and ?";
-        // user 200
-        // linker 1000
-        // server 4000
-        // log
+
         double startTIme = System.currentTimeMillis();
 
-//        salin07JdbcTemplate.queryForList(sql, new Object[]{a, b});
-//        salin09JdbcTemplate.queryForList(sql, new Object[]{a, b});
+        salin07JdbcTemplate.queryForList(sql, new Object[]{a, b});
+        salin09JdbcTemplate.queryForList(sql, new Object[]{a, b});
+        salin10JdbcTemplate.queryForList(sql, new Object[]{a, b});
         double endTIme = System.currentTimeMillis();
         diffTime += (endTIme - startTIme);
         return String.valueOf(diffTime);
@@ -116,15 +114,12 @@ public class RestController {
     @GetMapping("/select/sequence/created-at/{start}/{end}")
     public String selectSequence(@PathVariable("start") String start, @PathVariable("end") String end) {
         double diffTime = 0;
-        // 2024-05-14 02:35:00
-        // 2024-05-14 02:36:00
-        System.out.println(start);
-        System.out.println(end);
 
         String sql = "select * from logs where created_at between ? and ?";
         double startTIme = System.currentTimeMillis();
         salin07JdbcTemplate.queryForList(sql, new Object[]{start, end});
         salin09JdbcTemplate.queryForList(sql, new Object[]{start, end});
+        salin10JdbcTemplate.queryForList(sql, new Object[]{start, end});
         double endTIme = System.currentTimeMillis();
         diffTime += (endTIme - startTIme);
         return String.valueOf(diffTime);
@@ -142,12 +137,14 @@ public class RestController {
         long startTIme = System.currentTimeMillis();
         long endTIme = 0;
         Random random = new Random();
-
+        int shardKey = 3;
         long randomLinkerId = random.nextInt(2500) + 1;
-        if (randomLinkerId % 2 == 1) {
+        if (randomLinkerId % shardKey == 0) {
             salin07JdbcTemplate.queryForList(sql, randomLinkerId);
-        } else {
+        } else if (randomLinkerId % shardKey == 1) {
             salin09JdbcTemplate.queryForList(sql, randomLinkerId);
+        } else if (randomLinkerId % shardKey == 2) {
+            salin10JdbcTemplate.queryForList(sql, randomLinkerId);
         }
 
         endTIme = System.currentTimeMillis();
@@ -168,6 +165,7 @@ public class RestController {
 
         salin07JdbcTemplate.queryForList(sql, type);
         salin09JdbcTemplate.queryForList(sql, type);
+        salin10JdbcTemplate.queryForList(sql, type);
 
         long endTime = System.currentTimeMillis();
         double diffTime = (endTime - startTime);// 각 쿼리 실행 시간의 평균을 계산
@@ -184,6 +182,7 @@ public class RestController {
 
         salin07JdbcTemplate.queryForList(sql, userId);
         salin09JdbcTemplate.queryForList(sql, userId);
+        salin10JdbcTemplate.queryForList(sql, userId);
 
         long endTime = System.currentTimeMillis();
         double diffTime = (endTime - startTime);
