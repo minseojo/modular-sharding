@@ -132,7 +132,7 @@
 </head>
 <body>
 <div class="container">
-    <h2>960,000 데이터 쿼리 순차 조회</h2>
+    <h2>9,600,000 데이터 쿼리 순차 조회</h2>
     <table>
         <tr>
             <th>샤드 수</th>
@@ -164,7 +164,7 @@
             </tr>
             <tr>
                 <td><span>1</span></td>
-                <td>select log_id from logs where log_id between {begin} and {end}</td>
+                <td>select * from logs where log_id between {begin} and {end}</td>
                 <td><span>X</span></td>
                 <td><input type="text" id="input-1-3" placeholder="{begin}, {end}"></td>
                 <td>1, 960000</td>
@@ -173,7 +173,7 @@
             </tr>
             <tr>
                 <td><span>2</span></td>
-                <td>select log_id from logs where log_id between {begin} and {end}</td>
+                <td>select * from logs where log_id between {begin} and {end}</td>
                 <td><span>X</span></td>
                 <td><input type="text" id="input-1-4" placeholder="{begin}, {end}"></td>
                 <td>1, 960000</td>
@@ -202,7 +202,7 @@
             </tr>
             <tr>
                 <td><span>1</span></td>
-                <td><span>select log_id from logs where created_at between {startTime} and {endTime}</span></td>
+                <td><span>select * from logs where created_at between {startTime} and {endTime}</span></td>
                 <td><span>X</span></td>
                 <td><input type="text" id="input-2-3" placeholder="{startTime}, {endTime} "></td>
                 <td>2024-05-14 02:35:00, 2024-05-14 02:36:00</td>
@@ -211,7 +211,7 @@
             </tr>
             <tr>
                 <td><span>2</span></td>
-                <td><span>select log_id from logs where created_at between {startTime} and {endTime}</span></td>
+                <td><span>select * from logs where created_at between {startTime} and {endTime}</span></td>
                 <td><span>X</span></td>
                 <td><input type="text" id="input-2-4" placeholder="{startTime}, {endTime} "></td>
                 <td>2024-05-14 02:35:00, 2024-05-14 02:36:00</td>
@@ -224,7 +224,7 @@
 </div>
 
 <div class="container">
-    <h2>960,000 데이터 쿼리 랜덤 조회</h2>
+    <h2>9,600,000 데이터 쿼리 랜덤 조회</h2>
     <table>
         <tr>
             <th>샤드 수</th>
@@ -257,7 +257,7 @@
             </tr>
             <tr>
                 <td><span>1</span></td>
-                <td><span>select log_id from logs where linker_id = {linkerId}</span></td>
+                <td><span>select * from logs where linker_id = {linkerId}</span></td>
                 <td><span>X</span></td>
                 <td><input type="text" id="input-3-3" placeholder="{linkerId} "></td>
                 <td><span>1</span></td>
@@ -266,7 +266,7 @@
             </tr>
             <tr>
                 <td><span>2</span></td>
-                <td><span>select log_id from logs where linker_id = {linkerId}</span></td>
+                <td><span>select * from logs where linker_id = {linkerId}</span></td>
                 <td><span>X</span></td>
                 <td><input type="text" id="input-3-4" placeholder="{linkerId} "></td>
                 <td><span>1</span></td>
@@ -296,7 +296,7 @@
             </tr>
             <tr>
                 <td><span>1</span></td>
-                <td><span>select user_id from (select user_id from logs join linkers using(linker_id) where log_type = {type}) E join users U using(user_id)</span></td>
+                <td><span>select * from (select user_id from logs join linkers using(linker_id) where log_type = {type}) E join users U using(user_id)</span></td>
                 <td><span>X</span></td>
                 <td><input type="text" id="input-4-3" placeholder="{type} "></td>
                 <td><span>error</span></td>
@@ -305,7 +305,7 @@
             </tr>
             <tr>
                 <td><span>2</span></td>
-                <td><span>select user_id from (select user_id from logs join linkers using(linker_id) where log_type = {type}) E join users U using(user_id)</span></td>
+                <td><span>select * from (select user_id from logs join linkers using(linker_id) where log_type = {type}) E join users U using(user_id)</span></td>
                 <td><span>X</span></td>
                 <td><input type="text" id="input-4-4" placeholder="{type} "></td>
                 <td><span>error</span></td>
@@ -335,7 +335,7 @@
             </tr>
             <tr>
                 <td><span>1</span></td>
-                <td><span>select log_id from (select linker_id from linkers join users using(user_id) where user_id = {userId}) as LKID join logs using(linker_id);</span></td>
+                <td><span>select * from (select linker_id from linkers join users using(user_id) where user_id = {userId}) as LKID join logs using(linker_id);</span></td>
                 <td><span>X</span></td>
                 <td><input type="text" id="input-5-3" placeholder="{userId} "></td>
                 <td>1</td>
@@ -344,7 +344,7 @@
             </tr>
             <tr>
                 <td><span>2</span></td>
-                <td><span>select log_id from (select linker_id from linkers join users using(user_id) where user_id = {userId}) as LKID join logs using(linker_id);</span></td>
+                <td><span>select * from (select linker_id from linkers join users using(user_id) where user_id = {userId}) as LKID join logs using(linker_id);</span></td>
                 <td><span>X</span></td>
                 <td><input type="text" id="input-5-4" placeholder="{userId} "></td>
                 <td>1</td>
