@@ -39,10 +39,13 @@ public class RestController {
      * 순차 접근 [에이, 비]
      * 에스큐엘 *, 로그 아이디 본인이 설정
      */
-    @GetMapping("/shard1/select/sequence/{begin}/{end}")
-    public String selectSequence2(@PathVariable("begin") int begin, @PathVariable("end") int end) {
+    @GetMapping("/shard1/{use_index}/select/sequence/{begin}/{end}")
+    public String selectSequence2(@PathVariable("use_index") boolean useIndex, @PathVariable("begin") int begin, @PathVariable("end") int end) {
         double diffTime = 0;
         String sql = "select * from logs where log_id between ? and ?";
+        if (useIndex) {
+            sql = "select log_id from logs where log_id between ? and ?";
+        }
         double startTIme = System.currentTimeMillis();
         salin08JdbcTemplate.queryForList(sql, new Object[]{begin, end});
         double endTIme = System.currentTimeMillis();
@@ -50,10 +53,13 @@ public class RestController {
         return String.valueOf(diffTime);
     }
 
-    @GetMapping("/shard2/select/sequence/{begin}/{end}")
-    public String selectSequence(@PathVariable("begin") int a, @PathVariable("end") int b) {
+    @GetMapping("/shard2/{use_index}/select/sequence/{begin}/{end}")
+    public String selectSequence(@PathVariable("use_index") boolean useIndex,@PathVariable("begin") int a, @PathVariable("end") int b) {
         double diffTime = 0;
         String sql = "select * from logs where log_id between ? and ?";
+        if (useIndex) {
+            sql = "select log_id from logs where log_id between ? and ?";
+        }
         double startTIme = System.currentTimeMillis();
         salin07JdbcTemplate.queryForList(sql, new Object[]{a, b});
         salin09JdbcTemplate.queryForList(sql, new Object[]{a, b});
@@ -68,20 +74,26 @@ public class RestController {
      */
 
     // 스타트, 엔드는 문서에 써있음
-    @GetMapping("/shard1/select/sequence/created-at/{startTime}/{endTime}")
-    public String selectSequenceTime(@PathVariable("startTime") String start, @PathVariable("endTime") String end) {
+    @GetMapping("/shard1/{use_index}/select/sequence/created-at/{startTime}/{endTime}")
+    public String selectSequenceTime(@PathVariable("use_index") boolean useIndex,@PathVariable("startTime") String start, @PathVariable("endTime") String end) {
         double diffTime = 0;
-        String sql = "select log_id from logs where created_at between ? and ?";
+        String sql = "select * from logs where created_at between ? and ?";
+        if (useIndex) {
+            sql = "select log_id from logs where created_at between ? and ?";
+        }
         double startTIme = System.currentTimeMillis();
         salin08JdbcTemplate.queryForList(sql, new Object[]{start, end});
         double endTIme = System.currentTimeMillis();
         diffTime += (endTIme - startTIme);
         return String.valueOf(diffTime);
     }
-    @GetMapping("/shard2/select/sequence/created-at/{startTime}/{endTime}")
-    public String selectSequenceTime2(@PathVariable("startTime") String start, @PathVariable("endTime") String end) {
+    @GetMapping("/shard2/{use_index}/select/sequence/created-at/{startTime}/{endTime}")
+    public String selectSequenceTime2(@PathVariable("use_index") boolean useIndex,@PathVariable("startTime") String start, @PathVariable("endTime") String end) {
         double diffTime = 0;
-        String sql = "select log_id from logs where created_at between ? and ?";
+        String sql = "select * from logs where created_at between ? and ?";
+        if (useIndex) {
+            sql = "select log_id from logs where created_at between ? and ?";
+        }
         double startTIme = System.currentTimeMillis();
         salin07JdbcTemplate.queryForList(sql, new Object[]{start, end});
         salin09JdbcTemplate.queryForList(sql, new Object[]{start, end});
@@ -94,20 +106,26 @@ public class RestController {
      * 로그 테이블에서 해당 링커 아이디에 대한 정보 가져오기
      * 에스큐엘 *, 로그 아이디는 본인이 바꾸기
      */
-    @GetMapping("/shard1/select/random/linker/{linkerId}")
-    public String selectIndexRandom(@PathVariable int linkerId) {
+    @GetMapping("/shard1/{use_index}/select/random/linker/{linkerId}")
+    public String selectIndexRandom(@PathVariable("use_index") boolean useIndex,@PathVariable int linkerId) {
         double diffTime = 0.0;
         String sql = "select * from logs where linker_id = ?";
+        if (useIndex) {
+            sql = "select log_id from logs where linker_id = ?";
+        }
         long startTIme = System.currentTimeMillis();
         salin08JdbcTemplate.queryForList(sql, linkerId);
         long endTIme = System.currentTimeMillis();
         diffTime = (endTIme - startTIme);
         return String.valueOf(diffTime);
     }
-    @GetMapping("/shard2/select/random/linker/{linkerId}")
-    public String selectIndexRandom2(@PathVariable int linkerId) {
+    @GetMapping("/shard2/{use_index}/select/random/linker/{linkerId}")
+    public String selectIndexRandom2(@PathVariable("use_index") boolean useIndex,@PathVariable int linkerId) {
         double diffTime = 0.0;
         String sql = "select * from logs where linker_id = ?";
+        if (useIndex) {
+            sql = "select log_id from logs where linker_id = ?";
+        }
         long startTIme = System.currentTimeMillis();
         int shardKey = 2;
         if (linkerId % shardKey == 0) {
@@ -122,11 +140,16 @@ public class RestController {
 
 
 
-    @GetMapping("/shard1/select/userForLogType/{type}")
-    public String selectUserForLog(@PathVariable String type) {
+    @GetMapping("/shard1/{use_index}/select/userForLogType/{type}")
+    public String selectUserForLog(@PathVariable("use_index") boolean useIndex, @PathVariable String type) {
         String sql = "SELECT * " +
                 " FROM (select user_id from logs join linkers using(linker_id)" +
                 " where log_type = ?) E join users U using (user_id)";
+        if (useIndex) {
+            sql = "SELECT user_id " +
+                    " FROM (select user_id from logs join linkers using(linker_id)" +
+                    " where log_type = ?) E join users U using (user_id)";
+        }
         long startTime = System.currentTimeMillis();
         salin08JdbcTemplate.queryForList(sql, type);
         long endTime = System.currentTimeMillis();
@@ -134,11 +157,16 @@ public class RestController {
         return String.valueOf(diffTime);
     }
 
-    @GetMapping("/shard2/select/userForLogType/{type}")
-    public String selectUserForLog2(@PathVariable String type) {
+    @GetMapping("/shard2/{use_index}/select/userForLogType/{type}")
+    public String selectUserForLog2(@PathVariable("use_index") boolean useIndex, @PathVariable String type) {
         String sql = "SELECT * " +
                 " FROM (select user_id from logs join linkers using(linker_id)" +
                 " where log_type = ?) E join users U using (user_id)";
+        if (useIndex) {
+            sql = "SELECT user_id " +
+                    " FROM (select user_id from logs join linkers using(linker_id)" +
+                    " where log_type = ?) E join users U using (user_id)";
+        }
         long startTime = System.currentTimeMillis();
         salin07JdbcTemplate.queryForList(sql, type);
         salin09JdbcTemplate.queryForList(sql, type);
@@ -147,11 +175,16 @@ public class RestController {
         return String.valueOf(diffTime);
     }
 
-    @GetMapping("/shard1/select/logForUser/{userId}")
-    public String selectLogForUser(@PathVariable("userId") int userId) {
+    @GetMapping("/shard1/{use_index}/select/logForUser/{userId}")
+    public String selectLogForUser(@PathVariable("use_index") boolean useIndex, @PathVariable("userId") int userId) {
         String sql = "select * from (select linker_id from linkers join users using(user_id) " +
                 " where user_id = ?) as LKID" +
                 " join logs using(linker_id)";
+        if (useIndex) {
+            sql = "select log_id from (select linker_id from linkers join users using(user_id) " +
+                    " where user_id = ?) as LKID" +
+                    " join logs using(linker_id)";
+        }
         long startTime = System.currentTimeMillis();
         salin08JdbcTemplate.queryForList(sql, userId);
         long endTime = System.currentTimeMillis();
@@ -159,11 +192,16 @@ public class RestController {
         return String.valueOf(diffTime);
     }
 
-    @GetMapping("/shard2/select/logForUser/{userId}")
-    public String selectLogForUser2(@PathVariable("userId") int userId) {
+    @GetMapping("/shard2/{use_index}/select/logForUser/{userId}")
+    public String selectLogForUser2(@PathVariable("use_index") boolean useIndex, @PathVariable("userId") int userId) {
         String sql = "select * from (select linker_id from linkers join users using(user_id) " +
                 " where user_id = ?) as LKID" +
                 " join logs using(linker_id)";
+        if (useIndex) {
+            sql = "select log_id from (select linker_id from linkers join users using(user_id) " +
+                    " where user_id = ?) as LKID" +
+                    " join logs using(linker_id)";
+        }
         long startTime = System.currentTimeMillis();
         salin07JdbcTemplate.queryForList(sql, userId);
         salin09JdbcTemplate.queryForList(sql, userId);
