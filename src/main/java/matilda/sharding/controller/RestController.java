@@ -95,13 +95,15 @@ public class RestController {
     @GetMapping("/select/sequence/{a}/{b}")
     public String selectSequence(@PathVariable("a") int a, @PathVariable("b") int b) {
         double diffTime = 0;
+
         String sql = "select * from logs where log_id between ? and ?";
 
         double startTIme = System.currentTimeMillis();
 
         salin07JdbcTemplate.queryForList(sql, new Object[]{a, b});
+        //salin08JdbcTemplate.queryForList(sql, new Object[]{a, b});
         salin09JdbcTemplate.queryForList(sql, new Object[]{a, b});
-        salin10JdbcTemplate.queryForList(sql, new Object[]{a, b});
+        //salin10JdbcTemplate.queryForList(sql, new Object[]{a, b});
         double endTIme = System.currentTimeMillis();
         diffTime += (endTIme - startTIme);
         return String.valueOf(diffTime);
@@ -111,15 +113,20 @@ public class RestController {
      * 스타트, 엔드 시간 범위에 대해 조회하기
      * *, 로그 아이디 에스큐엘은 본인이 다시 쓰기
      */
+
+    // 스타트, 엔드는 문서에 써있음
+    //
     @GetMapping("/select/sequence/created-at/{start}/{end}")
     public String selectSequence(@PathVariable("start") String start, @PathVariable("end") String end) {
         double diffTime = 0;
 
-        String sql = "select * from logs where created_at between ? and ?";
+        String sql = "select log_id from logs where created_at between ? and ?";
+
         double startTIme = System.currentTimeMillis();
         salin07JdbcTemplate.queryForList(sql, new Object[]{start, end});
+        //salin08JdbcTemplate.queryForList(sql, new Object[]{start, end});
         salin09JdbcTemplate.queryForList(sql, new Object[]{start, end});
-        salin10JdbcTemplate.queryForList(sql, new Object[]{start, end});
+        //salin10JdbcTemplate.queryForList(sql, new Object[]{start, end});
         double endTIme = System.currentTimeMillis();
         diffTime += (endTIme - startTIme);
         return String.valueOf(diffTime);
@@ -137,13 +144,15 @@ public class RestController {
         long startTIme = System.currentTimeMillis();
         long endTIme = 0;
         Random random = new Random();
-        int shardKey = 3;
+        int shardKey = 4;
         long randomLinkerId = random.nextInt(2500) + 1;
         if (randomLinkerId % shardKey == 0) {
             salin07JdbcTemplate.queryForList(sql, randomLinkerId);
         } else if (randomLinkerId % shardKey == 1) {
-            salin09JdbcTemplate.queryForList(sql, randomLinkerId);
+            salin08JdbcTemplate.queryForList(sql, randomLinkerId);
         } else if (randomLinkerId % shardKey == 2) {
+            salin09JdbcTemplate.queryForList(sql, randomLinkerId);
+        } else {
             salin10JdbcTemplate.queryForList(sql, randomLinkerId);
         }
 
@@ -157,13 +166,14 @@ public class RestController {
     @GetMapping("/select/userForLogType/{type}")
     public String selectUserForLog(@PathVariable String type) {
 
-        String sql = "SELECT user_id " +
+        String sql = "SELECT * " +
                 " FROM (select user_id from logs join linkers using(linker_id)" +
-                " where log_type = ?) T join users U using (user_id)";
+                " where log_type = ?) E join users U using (user_id)";
         long startTime = System.currentTimeMillis();
 
 
         salin07JdbcTemplate.queryForList(sql, type);
+        salin08JdbcTemplate.queryForList(sql, type);
         salin09JdbcTemplate.queryForList(sql, type);
         salin10JdbcTemplate.queryForList(sql, type);
 
@@ -175,12 +185,13 @@ public class RestController {
     @GetMapping("/select/logForUser/{userId}")
     public String selectLogForUser(@PathVariable("userId") int userId) {
 
-        String sql = "select log_id from (select linker_id from linkers join users using(user_id) " +
-                " where user_id = ?) as LU" +
+        String sql = "select * from (select linker_id from linkers join users using(user_id) " +
+                " where user_id = ?) as LKID" +
                 " join logs using(linker_id)";
         long startTime = System.currentTimeMillis();
 
         salin07JdbcTemplate.queryForList(sql, userId);
+        salin08JdbcTemplate.queryForList(sql, userId);
         salin09JdbcTemplate.queryForList(sql, userId);
         salin10JdbcTemplate.queryForList(sql, userId);
 

@@ -6,6 +6,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.attribute.UserPrincipal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -41,12 +44,13 @@ public class DdlController {
 
     @GetMapping("/init/logs")
     public String initLogs() {
-        int[] testCase = {960_000};
+
+        int[] testCase = {9_600_000};
 
         Random random = new Random();
 
         // 2tl 36qns tlwkr 50ch
-        for (int i = 1; i <= testCase[0]; i++) {
+        for (int i = 5532998; i <= testCase[0]; i++) {
             int linkerIdRandomValue = random.nextInt(MAX_LINKER_SIZE) + 1;
             int logTypeRandomValue = random.nextInt(logTypes.length);
             salin08JdbcTemplate.update(logInsertSql, i, linkerIdRandomValue, logTypes[logTypeRandomValue], "");
@@ -57,6 +61,43 @@ public class DdlController {
                 salin09JdbcTemplate.update(logInsertSql, i, linkerIdRandomValue, logTypes[logTypeRandomValue], "");
             }
         }
+
+//        final int TOTAL_ROWS = 9600000;
+//
+//        try (BufferedWriter writer07 = new BufferedWriter(new FileWriter("C:\\Users\\jbnu01\\Desktop\\Mrnqordbrtlqaks07.csv"));
+//             BufferedWriter writer08 = new BufferedWriter(new FileWriter("C:\\Users\\jbnu01\\Desktop\\Mrnqordbrtlqaks08.csv"));
+//             BufferedWriter writer09 = new BufferedWriter(new FileWriter("C:\\Users\\jbnu01\\Desktop\\Mrnqordbrtlqaks09.csv"))) {
+//            writer07.write("log_id,linker_id,log_type,message");
+//            writer07.newLine();
+//            writer08.write("log_id,linker_id,log_type,message");
+//            writer08.newLine();
+//            writer09.write("log_id,linker_id,log_type,message");
+//            writer09.newLine();
+//
+//            Random random = new Random();
+//
+//            for (int i = 1; i <= TOTAL_ROWS; i++) {
+//                int logId = i;
+//                int linkerId = random.nextInt(MAX_LINKER_SIZE) + 1;
+//                String logType = logTypes[random.nextInt(logTypes.length)];
+//                String message = "";
+//
+//                if (linkerId % 2 == 0) {
+//                    writer07.write(String.format("%d,%d,%s,%s", logId, linkerId, logType, message));
+//                    writer07.newLine();
+//                } else {
+//                    writer09.write(String.format("%d,%d,%s,%s", logId, linkerId, logType, message));
+//                    writer09.newLine();
+//                }
+//
+//                writer08.write(String.format("%d,%d,%s,%s", logId, linkerId, logType, message));
+//                writer08.newLine();
+//
+//            }
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         return "init logs ok";
     }
@@ -70,12 +111,12 @@ public class DdlController {
 
         // 2tl 36qns tlwkr 50ch
 
-        for (int userIdRandomValue = 1; userIdRandomValue <= MAX_USER_SIZE; userIdRandomValue++) {
-            String userInfo = String.valueOf(userIdRandomValue);
+//        for (int userIdRandomValue = 1; userIdRandomValue <= MAX_USER_SIZE; userIdRandomValue++) {
+//            String userInfo = String.valueOf(userIdRandomValue);
 //            salin08JdbcTemplate.update(userInsertSql, userIdRandomValue, userInfo, userInfo);
 //            salin10JdbcTemplate.update(userInsertSql, userIdRandomValue, userInfo, userInfo);
 //            salin09JdbcTemplate.update(userInsertSql, userIdRandomValue, userInfo, userInfo);
-        }
+//        }
 
 //        for (int linkerIdRandomValue = 1; linkerIdRandomValue <= MAX_LINKER_SIZE; linkerIdRandomValue++) {
 //            int userIdRandomValue = random.nextInt(MAX_USER_SIZE) + 1;
