@@ -29,9 +29,6 @@
         th {
             background-color: #f2f2f2;
         }
-        .button-container {
-            text-align: right;
-        }
         .button-container button {
             padding: 10px 20px;
             border: none;
@@ -43,17 +40,38 @@
         .button-container button:hover {
             background-color: #0056b3;
         }
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+        .loader {
+            display: none;
+            align-items: center;
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 16px;
+            height: 16px;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loader-container {
+            display: none;
+            align-items: center;
         }
     </style>
-
     <script>
+        function showLoader(group, item) {
+            document.getElementById(`button-${group}-${item}`).disabled = true;
+            document.getElementById(`loader-${group}-${item}`).style.display = 'inline-block';
+        }
+
+        function hideLoader(group, item) {
+            document.getElementById(`button-${group}-${item}`).disabled = false;
+            document.getElementById(`loader-${group}-${item}`).style.display = 'none';
+        }
+
         function executeQuery1(group, item, shard) {
+            showLoader(group, item);
             const input = document.getElementById(`input-${group}-${item}`).value;
             const [begin, end] = input.split(',').map(Number);
             console.log(begin + ' ' + end);
@@ -61,14 +79,17 @@
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById(`result-${group}-${item}`).innerText = data + ' ms';
+                    hideLoader(group, item);
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     document.getElementById(`result-${group}-${item}`).innerText = 'Error';
+                    hideLoader(group, item);
                 });
         }
 
         function executeQuery2(group, item, shard) {
+            showLoader(group, item);
             const input = document.getElementById(`input-${group}-${item}`).value;
             const [startTime, endTime] = input.split(',').map(String);
             console.log(startTime + ' ' + endTime);
@@ -76,14 +97,17 @@
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById(`result-${group}-${item}`).innerText = data + ' ms';
+                    hideLoader(group, item);
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     document.getElementById(`result-${group}-${item}`).innerText = 'Error';
+                    hideLoader(group, item);
                 });
         }
 
         function executeQuery3(group, item, shard) {
+            showLoader(group, item);
             const input = document.getElementById(`input-${group}-${item}`).value;
             const [linkerId] = input.split(',').map(Number);
             console.log(linkerId);
@@ -91,14 +115,17 @@
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById(`result-${group}-${item}`).innerText = data + ' ms';
+                    hideLoader(group, item);
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     document.getElementById(`result-${group}-${item}`).innerText = 'Error';
+                    hideLoader(group, item);
                 });
         }
 
         function executeQuery4(group, item, shard) {
+            showLoader(group, item);
             const input = document.getElementById(`input-${group}-${item}`).value;
             const [type] = input.split(',').map(String);
             console.log(type);
@@ -106,14 +133,17 @@
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById(`result-${group}-${item}`).innerText = data + ' ms';
+                    hideLoader(group, item);
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     document.getElementById(`result-${group}-${item}`).innerText = 'Error';
+                    hideLoader(group, item);
                 });
         }
 
         function executeQuery5(group, item, shard) {
+            showLoader(group, item);
             const input = document.getElementById(`input-${group}-${item}`).value;
             const [userId] = input.split(',').map(Number);
             console.log(userId);
@@ -121,13 +151,14 @@
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById(`result-${group}-${item}`).innerText = data + ' ms';
+                    hideLoader(group, item);
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     document.getElementById(`result-${group}-${item}`).innerText = 'Error';
+                    hideLoader(group, item);
                 });
         }
-
     </script>
 </head>
 <body>
@@ -150,7 +181,10 @@
                 <td>O</td>
                 <td><input type="text" id="input-1-1" placeholder="{begin}, {end}"></td>
                 <td>1, 960000</td>
-                <td><button onclick="executeQuery1(1, 1, 1)">실행</button></td>
+                <td>
+                    <button id="button-1-1" onclick="executeQuery1(1, 1, 1)">실행</button>
+                    <span id="loader-1-1" class="loader"></span>
+                </td>
                 <td><span id="result-1-1"></span></td>
             </tr>
             <tr>
@@ -159,7 +193,10 @@
                 <td>O</td>
                 <td><input type="text" id="input-1-2" placeholder="{begin}, {end}"></td>
                 <td>1, 960000</td>
-                <td><button onclick="executeQuery1(1, 2, 2)">실행</button></td>
+                <td>
+                    <button id="button-1-2" onclick="executeQuery1(1, 2, 2)">실행</button>
+                    <span id="loader-1-2" class="loader"></span>
+                </td>
                 <td><span id="result-1-2"></span></td>
             </tr>
             <tr>
@@ -168,7 +205,10 @@
                 <td><span>X</span></td>
                 <td><input type="text" id="input-1-3" placeholder="{begin}, {end}"></td>
                 <td>1, 960000</td>
-                <td><button onclick="executeQuery1(1, 3, 1)">실행</button></td>
+                <td>
+                    <button id="button-1-3" onclick="executeQuery1(1, 3, 1)">실행</button>
+                    <span id="loader-1-3" class="loader"></span>
+                </td>
                 <td><span id="result-1-3"></span></td>
             </tr>
             <tr>
@@ -177,7 +217,10 @@
                 <td><span>X</span></td>
                 <td><input type="text" id="input-1-4" placeholder="{begin}, {end}"></td>
                 <td>1, 960000</td>
-                <td><button onclick="executeQuery1(1, 4, 2)">실행</button></td>
+                <td>
+                    <button id="button-1-4" onclick="executeQuery1(1, 4, 2)">실행</button>
+                    <span id="loader-1-4" class="loader"></span>
+                </td>
                 <td><span id="result-1-4"></span></td>
             </tr>
         </div>
@@ -188,7 +231,10 @@
                 <td><span>O</span></td>
                 <td><input type="text" id="input-2-1" placeholder="{startTime}, {endTime}"></td>
                 <td>2024-05-14 02:35:00, 2024-05-14 02:36:00</td>
-                <td><button onclick="executeQuery2(2, 1, 1)">실행</button></td>
+                <td>
+                    <button id="button-2-1" onclick="executeQuery2(2, 1, 1)">실행</button>
+                    <span id="loader-2-1" class="loader"></span>
+                </td>
                 <td><span id="result-2-1"></span></td>
             </tr>
             <tr>
@@ -197,7 +243,10 @@
                 <td><span>O</span></td>
                 <td><input type="text" id="input-2-2" placeholder="{startTime}, {endTime}"></td>
                 <td>2024-05-14 02:35:00, 2024-05-14 02:36:00</td>
-                <td><button  onclick="executeQuery2(2, 2, 2)">실행</button></td>
+                <td>
+                    <button id="button-2-2" onclick="executeQuery2(2, 2, 2)">실행</button>
+                    <span id="loader-2-2" class="loader"></span>
+                </td>
                 <td><span id="result-2-2"></span></td>
             </tr>
             <tr>
@@ -206,7 +255,10 @@
                 <td><span>X</span></td>
                 <td><input type="text" id="input-2-3" placeholder="{startTime}, {endTime} "></td>
                 <td>2024-05-14 02:35:00, 2024-05-14 02:36:00</td>
-                <td><button onclick="executeQuery2(2, 3, 1)">실행</button></td>
+                <td>
+                    <button id="button-2-3" onclick="executeQuery2(2, 3, 1)">실행</button>
+                    <span id="loader-2-3" class="loader"></span>
+                </td>
                 <td><span id="result-2-3"></span></td>
             </tr>
             <tr>
@@ -215,7 +267,10 @@
                 <td><span>X</span></td>
                 <td><input type="text" id="input-2-4" placeholder="{startTime}, {endTime} "></td>
                 <td>2024-05-14 02:35:00, 2024-05-14 02:36:00</td>
-                <td><button onclick="executeQuery2(2, 4, 2)">실행</button></td>
+                <td>
+                    <button id="button-2-4" onclick="executeQuery2(2, 4, 2)">실행</button>
+                    <span id="loader-2-4" class="loader"></span>
+                </td>
                 <td><span id="result-2-4"></span></td>
             </tr>
         </div>
@@ -243,7 +298,10 @@
                 <td><span>O</span></td>
                 <td><input type="text" id="input-3-1" placeholder="{linkerId} "></td>
                 <td><span>1</span></td>
-                <td><button onclick="executeQuery3(3, 1, 1)">실행</button></td>
+                <td>
+                    <button id="button-3-1" onclick="executeQuery3(3, 1, 1)">실행</button>
+                    <span id="loader-3-1" class="loader"></span>
+                </td>
                 <td><span id="result-3-1"></span></td>
             </tr>
             <tr>
@@ -252,7 +310,10 @@
                 <td><span>O</span></td>
                 <td><input type="text" id="input-3-2" placeholder="{linkerId} "></td>
                 <td><span>1</span></td>
-                <td><button onclick="executeQuery3(3, 2, 2)">실행</button></td>
+                <td>
+                    <button id="button-3-2" onclick="executeQuery3(3, 2, 2)">실행</button>
+                    <span id="loader-3-2" class="loader"></span>
+                </td>
                 <td><span id="result-3-2"></span></td>
             </tr>
             <tr>
@@ -261,7 +322,10 @@
                 <td><span>X</span></td>
                 <td><input type="text" id="input-3-3" placeholder="{linkerId} "></td>
                 <td><span>1</span></td>
-                <td><button onclick="executeQuery3(3, 3, 1)">실행</button></td>
+                <td>
+                    <button id="button-3-3" onclick="executeQuery3(3, 3, 1)">실행</button>
+                    <span id="loader-3-3" class="loader"></span>
+                </td>
                 <td><span id="result-3-3"></span></td>
             </tr>
             <tr>
@@ -270,7 +334,10 @@
                 <td><span>X</span></td>
                 <td><input type="text" id="input-3-4" placeholder="{linkerId} "></td>
                 <td><span>1</span></td>
-                <td><button onclick="executeQuery3(3, 4, 2)">실행</button></td>
+                <td>
+                    <button id="button-3-4" onclick="executeQuery3(3, 4, 2)">실행</button>
+                    <span id="loader-3-4" class="loader"></span>
+                </td>
                 <td><span id="result-3-4"></span></td>
             </tr>
         </div>
@@ -282,7 +349,10 @@
                 <td><span>O</span></td>
                 <td><input type="text" id="input-4-1" placeholder="{type} "></td>
                 <td><span>error</span></td>
-                <td><button onclick="executeQuery4(4, 1, 1)">실행</button></td>
+                <td>
+                    <button id="button-4-1" onclick="executeQuery4(4, 1, 1)">실행</button>
+                    <span id="loader-4-1" class="loader"></span>
+                </td>
                 <td><span id="result-4-1"></span></td>
             </tr>
             <tr>
@@ -291,7 +361,10 @@
                 <td><span>O</span></td>
                 <td><input type="text" id="input-4-2" placeholder="{type} "></td>
                 <td><span>error</span></td>
-                <td><button onclick="executeQuery4(4, 2, 2)">실행</button></td>
+                <td>
+                    <button id="button-4-2" onclick="executeQuery4(4, 2, 2)">실행</button>
+                    <span id="loader-4-2" class="loader"></span>
+                </td>
                 <td><span id="result-4-2"></span></td>
             </tr>
             <tr>
@@ -300,7 +373,10 @@
                 <td><span>X</span></td>
                 <td><input type="text" id="input-4-3" placeholder="{type} "></td>
                 <td><span>error</span></td>
-                <td><button onclick="executeQuery4(4, 3, 1)">실행</button></td>
+                <td>
+                    <button id="button-4-3" onclick="executeQuery4(4, 3, 1)">실행</button>
+                    <span id="loader-4-3" class="loader"></span>
+                </td>
                 <td><span id="result-4-3"></span></td>
             </tr>
             <tr>
@@ -309,7 +385,10 @@
                 <td><span>X</span></td>
                 <td><input type="text" id="input-4-4" placeholder="{type} "></td>
                 <td><span>error</span></td>
-                <td><button onclick="executeQuery4(4, 4, 2)">실행</button></td>
+                <td>
+                    <button id="button-4-4" onclick="executeQuery4(4, 4, 2)">실행</button>
+                    <span id="loader-4-4" class="loader"></span>
+                </td>
                 <td><span id="result-4-4"></span></td>
             </tr>
         </div>
@@ -321,7 +400,10 @@
                 <td><span>O</span></td>
                 <td><input type="text" id="input-5-1" placeholder="{userId} "></td>
                 <td>1</td>
-                <td><button onclick="executeQuery5(5, 1, 1)">실행</button></td>
+                <td>
+                    <button id="button-5-1" onclick="executeQuery5(5, 1, 1)">실행</button>
+                    <span id="loader-5-1" class="loader"></span>
+                </td>
                 <td><span id="result-5-1"></span></td>
             </tr>
             <tr>
@@ -330,7 +412,10 @@
                 <td><span>O</span></td>
                 <td><input type="text" id="input-5-2" placeholder="{userId} "></td>
                 <td>1</td>
-                <td><button onclick="executeQuery5(5, 2, 2)">실행</button></td>
+                <td>
+                    <button id="button-5-2" onclick="executeQuery5(5, 2, 2)">실행</button>
+                    <span id="loader-5-2" class="loader"></span>
+                </td>
                 <td><span id="result-5-2"></span></td>
             </tr>
             <tr>
@@ -339,7 +424,10 @@
                 <td><span>X</span></td>
                 <td><input type="text" id="input-5-3" placeholder="{userId} "></td>
                 <td>1</td>
-                <td><button onclick="executeQuery5(5, 3, 1)">실행</button></td>
+                <td>
+                    <button id="button-5-3" onclick="executeQuery5(5, 3, 1)">실행</button>
+                    <span id="loader-5-3" class="loader"></span>
+                </td>
                 <td><span id="result-5-3"></span></td>
             </tr>
             <tr>
@@ -348,7 +436,10 @@
                 <td><span>X</span></td>
                 <td><input type="text" id="input-5-4" placeholder="{userId} "></td>
                 <td>1</td>
-                <td><button onclick="executeQuery5(5, 4, 2)">실행</button></td>
+                <td>
+                    <button id="button-5-4" onclick="executeQuery5(5, 4, 2)">실행</button>
+                    <span id="loader-5-4" class="loader"></span>
+                </td>
                 <td><span id="result-5-4"></span></td>
             </tr>
         </div>
