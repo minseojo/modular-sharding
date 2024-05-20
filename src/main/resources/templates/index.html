@@ -1,190 +1,362 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>홈 화면</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>쿼리 조회</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-        }
-        h2 {
-            color: #333;
-            text-align: center;
-            margin: 20px 0;
+            margin: 0 auto;
+            padding: 0;
         }
         .container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 2개의 열 */
-            grid-template-rows: repeat(2, auto); /* 3개의 행, 자동 높이 조정 */
-            grid-gap: 20px; /* 컨테이너 사이의 간격 */
-            padding: 20px; /* 컨테이너의 안쪽 여백 */
-            justify-content: center;
-            align-items: start;
-        }
-
-        .button-group-container {
+            margin: 0 auto;
             padding: 20px;
-            border: 1px solid black;
+            border: 1px solid #ccc;
             border-radius: 10px;
-            background-color: white; /* 배경색 추가 */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* 그림자 효과 추가 */
-            max-width: 500px; /* 최대 너비 설정 */
         }
-        .button-group {
-            display: flex;
-            margin-bottom: 10px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
         }
-        button {
-            background-color: #007BFF;
-            color: white;
-            border: none;
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .button-container {
+            text-align: right;
+        }
+        .button-container button {
             padding: 10px 20px;
-            margin: 5px;
+            border: none;
             border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
-        button:hover {
+        .button-container button:hover {
             background-color: #0056b3;
         }
-        .time-display {
-            color: #555;
-            font-size: 16px;
-            margin-top: 5px;
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+
+    <script>
+        function executeQuery1(group, item) {
+            const input = document.getElementById(`input-${group}-${item}`).value;
+            const [begin, end] = input.split(',').map(Number);
+            console.log(begin + ' ' + end);
+            fetch(`/select/sequence/${begin}/${end}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById(`result-${group}-${item}`).innerText = data + ' ms';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById(`result-${group}-${item}`).innerText = 'Error';
+                });
         }
 
-    </style>
-</head>
+        function executeQuery2(group, item) {
+            const input = document.getElementById(`input-${group}-${item}`).value;
+            const [startTime, endTime] = input.split(',').map(String);
+            console.log(startTime + ' ' + endTime);
+            fetch(`/select/sequence/created-at/${startTime}/${endTime}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById(`result-${group}-${item}`).innerText = data + ' ms';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById(`result-${group}-${item}`).innerText = 'Error';
+                });
+        }
 
+        function executeQuery3(group, item) {
+            const input = document.getElementById(`input-${group}-${item}`).value;
+            const [linkerId] = input.split(',').map(Number);
+            console.log(linkerId);
+            fetch(`/select/random/linker/${linkerId}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById(`result-${group}-${item}`).innerText = data + ' ms';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById(`result-${group}-${item}`).innerText = 'Error';
+                });
+        }
+
+        function executeQuery4(group, item) {
+            const input = document.getElementById(`input-${group}-${item}`).value;
+            const [type] = input.split(',').map(String);
+            console.log(type);
+            fetch(`/select/userForLogType/${type}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById(`result-${group}-${item}`).innerText = data + ' ms';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById(`result-${group}-${item}`).innerText = 'Error';
+                });
+        }
+
+        function executeQuery5(group, item) {
+            const input = document.getElementById(`input-${group}-${item}`).value;
+            const [userId] = input.split(',').map(Number);
+            console.log(userId);
+            fetch(`/select/logForUser/${userId}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById(`result-${group}-${item}`).innerText = data + ' ms';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById(`result-${group}-${item}`).innerText = 'Error';
+                });
+        }
+
+    </script>
+</head>
 <body>
 <div class="container">
-    <div class="button-group-container">
-        <h2>삽입 - insert into</h2>
-        <div class="button-group">
-            <button id="insert-10">사용자 10명 추가</button>
-            <button id="insert-100">사용자 100명 추가</button>
-            <button id="insert-1000">사용자 1,000명 추가</button>
+    <h2>960,000 데이터 쿼리 순차 조회</h2>
+    <table>
+        <tr>
+            <th>샤드 수</th>
+            <th>쿼리</th>
+            <th>인덱스 여부</th>
+            <th>입력</th>
+            <th>입력 예시</th>
+            <th>쿼리 실행</th>
+            <th>조회 시간</th>
+        </tr>
+        <div>
+            <tr>
+                <td>1</td>
+                <td>select log_id from logs where log_id between {begin} and {end}</td>
+                <td>O</td>
+                <td><input type="text" id="input-1-1" placeholder="{begin}, {end}"></td>
+                <td>1, 960000</td>
+                <td><button onclick="executeQuery1(1, 1)">실행</button></td>
+                <td><span id="result-1-1"></span></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>select log_id from logs where log_id between {begin} and {end}</td>
+                <td>O</td>
+                <td><input type="text" id="input-1-2" placeholder="{begin}, {end}"></td>
+                <td>1, 960000</td>
+                <td><button onclick="executeQuery1(1, 2)">실행</button></td>
+                <td><span id="result-1-2"></span></td>
+            </tr>
+            <tr>
+                <td><span>1</span></td>
+                <td>select log_id from logs where log_id between {begin} and {end}</td>
+                <td><span>X</span></td>
+                <td><input type="text" id="input-1-3" placeholder="{begin}, {end}"></td>
+                <td>1, 960000</td>
+                <td><button onclick="executeQuery1(1, 3)">실행</button></td>
+                <td><span id="result-1-3"></span></td>
+            </tr>
+            <tr>
+                <td><span>2</span></td>
+                <td>select log_id from logs where log_id between {begin} and {end}</td>
+                <td><span>X</span></td>
+                <td><input type="text" id="input-1-4" placeholder="{begin}, {end}"></td>
+                <td>1, 960000</td>
+                <td><button onclick="executeQuery1(1, 4)">실행</button></td>
+                <td><span id="result-1-4"></span></td>
+            </tr>
         </div>
-        <div class="time-display" id="insert-time"></div>
-    </div>
+        <div>
+            <tr>
+                <td><span>1</span></td>
+                <td><span>select log_id from logs where created_at between {startTime} and {endTime}</span></td>
+                <td><span>O</span></td>
+                <td><input type="text" id="input-2-1" placeholder="{startTime}, {endTime}"></td>
+                <td>2024-05-14 02:35:00, 2024-05-14 02:36:00</td>
+                <td><button onclick="executeQuery2(2, 1)">실행</button></td>
+                <td><span id="result-2-1"></span></td>
+            </tr>
+            <tr>
+                <td><span>2</span></td>
+                <td><span>select log_id from logs where created_at between {startTime} and {endTime}</span></td>
+                <td><span>O</span></td>
+                <td><input type="text" id="input-2-2" placeholder="{startTime}, {endTime}"></td>
+                <td>2024-05-14 02:35:00, 2024-05-14 02:36:00</td>
+                <td><button  onclick="executeQuery2(2, 2)">실행</button></td>
+                <td><span id="result-2-2"></span></td>
+            </tr>
+            <tr>
+                <td><span>3</span></td>
+                <td><span>select log_id from logs where created_at between {startTime} and {endTime}</span></td>
+                <td><span>X</span></td>
+                <td><input type="text" id="input-2-3" placeholder="{startTime}, {endTime} "></td>
+                <td>2024-05-14 02:35:00, 2024-05-14 02:36:00</td>
+                <td><button onclick="executeQuery2(2, 3)">실행</button></td>
+                <td><span id="result-2-3"></span></td>
+            </tr>
+            <tr>
+                <td><span>4</span></td>
+                <td><span>select log_id from logs where created_at between {startTime} and {endTime}</span></td>
+                <td><span>X</span></td>
+                <td><input type="text" id="input-2-4" placeholder="{startTime}, {endTime} "></td>
+                <td>2024-05-14 02:35:00, 2024-05-14 02:36:00</td>
+                <td><button onclick="executeQuery2(2, 4)">실행</button></td>
+                <td><span id="result-2-4"></span></td>
+            </tr>
+        </div>
 
-    <div class="button-group-container">
-        <h2>로그 순차 조회 - select</h2>
-        <div class="button-group">
-            <button id="select-sequence-10">로그 10개 순차 조회</button>
-            <button id="select-sequence-100">로그 100개 순차 조회</button>
-            <button id="select-sequence-1000">로그 1,000개 순차 조회</button>
-        </div>
-        <div class="button-group">
-            <button id="select-sequence-10000">로그 10,000개 순차 조회</button>
-            <button id="select-sequence-100000">로그 100,000개 순차 조회</button>
-            <button id="select-sequence-1000000">로그 1,000,000개 순차 조회</button>
-        </div>
-        <div class="time-display" id="select-sequence-time"></div>
-    </div>
-
-    <div class="button-group-container">
-        <h2>로그 랜덤 조회 - select</h2>
-        <div class="button-group">
-            <button id="select-random-10">로그 10개 랜덤 조회</button>
-            <button id="select-random-100">로그 100개 랜덤 조회</button>
-            <button id="select-random-1000">로그 1,000개 랜덤 조회</button>
-        </div>
-        <div class="button-group">
-            <button id="select-random-10000">로그 10,000개 랜덤 조회</button>
-            <button id="select-random-100000">로그 100,000개 랜덤 조회</button>
-            <button id="select-random-1000000">로그 1,000,000개 랜덤 조회</button>
-        </div>
-        <div class="time-display" id="select-random-time"></div>
-    </div>
+    </table>
 </div>
-<script>
-    async function handleInsert(userCount) {
-        const startTime = performance.now();
-        // 서버의 /insert 엔드포인트 호출
-        let url = `/insert/${userCount}`;
-        try {
-            const response = await fetch(url, { method: 'GET' });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.text(); // 또는 json() 등을 사용하여 데이터 파싱
-            console.log(data); // 서버 응답 로그 출력
-        } catch (error) {
-            console.error('Error fetching data: ', error);
-            document.getElementById('insert-time').textContent = `삽입 ${userCount}: 실패`;
-            return;
-        }
-        const endTime = performance.now();
-        const timeTaken = endTime - startTime;
-        document.getElementById('insert-time').textContent = `삽입 ${userCount}: ${timeTaken.toFixed(2)}ms`;
-    }
 
-    async function handleSelectSequence(logCount) {
-        const startTime = performance.now();
-        // 서버의 /select 엔드포인트 호출
-        let url = `/select/sequence/${logCount}`;
-        try {
-            const response = await fetch(url, { method: 'GET' });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.text(); // 또는 json() 등을 사용하여 데이터 파싱
-            console.log(data); // 서버 응답 로그 출력
-        } catch (error) {
-            console.error('Error fetching data: ', error);
-            document.getElementById('select-sequence-time').textContent = `로그 ${logCount}개 순차 조회: 실패`;
-            return;
-        }
-        const endTime = performance.now();
-        const timeTaken = endTime - startTime;
+<div class="container">
+    <h2>960,000 데이터 쿼리 랜덤 조회</h2>
+    <table>
+        <tr>
+            <th>샤드 수</th>
+            <th>쿼리</th>
+            <th>인덱스 여부</th>
+            <th>입력</th>
+            <th>입력 예시</th>
+            <th>쿼리 실행</th>
+            <th>조회 시간</th>
+        </tr>
 
-        document.getElementById('select-sequence-time').textContent = `로그 ${logCount}개 순차 조회: ${timeTaken.toFixed(2)}ms`;
-    }
-    async function handleSelectRandom(logCount) {
-        const startTime = performance.now();
-        // 서버의 /select 엔드포인트 호출
-        let url = `/select/random/${logCount}`;
-        try {
-            const response = await fetch(url, { method: 'GET' });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.text(); // 또는 json() 등을 사용하여 데이터 파싱
-            console.log(data); // 서버 응답 로그 출력
-        } catch (error) {
-            console.error('Error fetching data: ', error);
-            document.getElementById('select-random-time').textContent = `로그 ${logCount}개 랜덤 조회: 실패`;
-            return;
-        }
-        const endTime = performance.now();
-        const timeTaken = endTime - startTime;
+        <div>
+            <tr>
+                <td><span>1</span></td>
+                <td><span>select log_id from logs where linker_id = {linkerId}</span></td>
+                <td><span>O</span></td>
+                <td><input type="text" id="input-3-1" placeholder="{linkerId} "></td>
+                <td><span>1</span></td>
+                <td><button onclick="executeQuery3(3, 1)">실행</button></td>
+                <td><span id="result-3-1"></span></td>
+            </tr>
+            <tr>
+                <td><span>2</span></td>
+                <td><span>select log_id from logs where linker_id = {linkerId}</span></td>
+                <td><span>O</span></td>
+                <td><input type="text" id="input-3-2" placeholder="{linkerId} "></td>
+                <td><span>1</span></td>
+                <td><button onclick="executeQuery3(3, 2)">실행</button></td>
+                <td><span id="result-3-2"></span></td>
+            </tr>
+            <tr>
+                <td><span>3</span></td>
+                <td><span>select log_id from logs where linker_id = {linkerId}</span></td>
+                <td><span>X</span></td>
+                <td><input type="text" id="input-3-3" placeholder="{linkerId} "></td>
+                <td><span>1</span></td>
+                <td><button onclick="executeQuery3(3, 3)">실행</button></td>
+                <td><span id="result-3-3"></span></td>
+            </tr>
+            <tr>
+                <td><span>4</span></td>
+                <td><span>select log_id from logs where linker_id = {linkerId}</span></td>
+                <td><span>X</span></td>
+                <td><input type="text" id="input-3-4" placeholder="{linkerId} "></td>
+                <td><span>1</span></td>
+                <td><button onclick="executeQuery3(3, 4)">실행</button></td>
+                <td><span id="result-3-4"></span></td>
+            </tr>
+        </div>
 
-        document.getElementById('select-random-time').textContent = `로그 ${logCount}개 랜덤 조회 : ${timeTaken.toFixed(2)}ms`;
-    }
+        <div>
+            <tr>
+                <td><span>1</span></td>
+                <td><span>select user_id from (select user_id from logs join linkers using(linker_id) where log_type = {type}) E join users U using(user_id)</span></td>
+                <td><span>O</span></td>
+                <td><input type="text" id="input-4-1" placeholder="{type} "></td>
+                <td><span>error</span></td>
+                <td><button onclick="executeQuery4(4, 1)">실행</button></td>
+                <td><span id="result-4-1"></span></td>
+            </tr>
+            <tr>
+                <td><span>2</span></td>
+                <td><span>select user_id from (select user_id from logs join linkers using(linker_id) where log_type = {type}) E join users U using(user_id)</span></td>
+                <td><span>O</span></td>
+                <td><input type="text" id="input-4-2" placeholder="{type} "></td>
+                <td><span>error</span></td>
+                <td><button onclick="executeQuery4(4, 2)">실행</button></td>
+                <td><span id="result-4-2"></span></td>
+            </tr>
+            <tr>
+                <td><span>3</span></td>
+                <td><span>select user_id from (select user_id from logs join linkers using(linker_id) where log_type = {type}) E join users U using(user_id)</span></td>
+                <td><span>X</span></td>
+                <td><input type="text" id="input-4-3" placeholder="{type} "></td>
+                <td><span>error</span></td>
+                <td><button onclick="executeQuery4(4, 3)">실행</button></td>
+                <td><span id="result-4-3"></span></td>
+            </tr>
+            <tr>
+                <td><span>4</span></td>
+                <td><span>select user_id from (select user_id from logs join linkers using(linker_id) where log_type = {type}) E join users U using(user_id)</span></td>
+                <td><span>X</span></td>
+                <td><input type="text" id="input-4-4" placeholder="{type} "></td>
+                <td><span>error</span></td>
+                <td><button onclick="executeQuery4(4, 4)">실행</button></td>
+                <td><span id="result-4-4"></span></td>
+            </tr>
+        </div>
 
+        <div>
+            <tr>
+                <td><span>1</span></td>
+                <td><span>select log_id from (select linker_id from linkers join users using(user_id) where user_id = {userId}) as LKID join logs using(linker_id);</span></td>
+                <td><span>O</span></td>
+                <td><input type="text" id="input-5-1" placeholder="{userId} "></td>
+                <td>1</td>
+                <td><button onclick="executeQuery5(5, 1)">실행</button></td>
+                <td><span id="result-5-1"></span></td>
+            </tr>
+            <tr>
+                <td><span>2</span></td>
+                <td><span>select log_id from (select linker_id from linkers join users using(user_id) where user_id = {userId}) as LKID join logs using(linker_id);</span></td>
+                <td><span>O</span></td>
+                <td><input type="text" id="input-5-2" placeholder="{userId} "></td>
+                <td>1</td>
+                <td><button onclick="executeQuery5(5, 2)">실행</button></td>
+                <td><span id="result-5-2"></span></td>
+            </tr>
+            <tr>
+                <td><span>3</span></td>
+                <td><span>select log_id from (select linker_id from linkers join users using(user_id) where user_id = {userId}) as LKID join logs using(linker_id);</span></td>
+                <td><span>X</span></td>
+                <td><input type="text" id="input-5-3" placeholder="{userId} "></td>
+                <td>1</td>
+                <td><button onclick="executeQuery5(5, 3)">실행</button></td>
+                <td><span id="result-5-3"></span></td>
+            </tr>
+            <tr>
+                <td><span>4</span></td>
+                <td><span>select log_id from (select linker_id from linkers join users using(user_id) where user_id = {userId}) as LKID join logs using(linker_id);</span></td>
+                <td><span>X</span></td>
+                <td><input type="text" id="input-5-4" placeholder="{userId} "></td>
+                <td>1</td>
+                <td><button onclick="executeQuery5(5, 4)">실행</button></td>
+                <td><span id="result-5-4"></span></td>
+            </tr>
+        </div>
+    </table>
+</div>
 
-    document.getElementById('insert-10').addEventListener('click', () => handleInsert(10));
-    document.getElementById('insert-100').addEventListener('click', () => handleInsert(100));
-    document.getElementById('insert-1000').addEventListener('click', () => handleInsert(1000));
-
-    document.getElementById('select-sequence-10').addEventListener('click', () => handleSelectSequence(10));
-    document.getElementById('select-sequence-100').addEventListener('click', () => handleSelectSequence(100));
-    document.getElementById('select-sequence-1000').addEventListener('click', () => handleSelectSequence(1000));
-    document.getElementById('select-sequence-10000').addEventListener('click', () => handleSelectSequence(10000));
-    document.getElementById('select-sequence-100000').addEventListener('click', () => handleSelectSequence(100000));
-    document.getElementById('select-sequence-1000000').addEventListener('click', () => handleSelectSequence(1000000));
-
-    document.getElementById('select-random-10').addEventListener('click', () => handleSelectRandom(10));
-    document.getElementById('select-random-100').addEventListener('click', () => handleSelectRandom(100));
-    document.getElementById('select-random-1000').addEventListener('click', () => handleSelectRandom(1000));
-    document.getElementById('select-random-10000').addEventListener('click', () => handleSelectRandom(10000));
-    document.getElementById('select-random-100000').addEventListener('click', () => handleSelectRandom(100000));
-    document.getElementById('select-random-1000000').addEventListener('click', () => handleSelectRandom(1000000));
-</script>
+</table>
+</div>
 
 </body>
 </html>

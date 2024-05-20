@@ -63,37 +63,14 @@ public class RestController {
         }
         return "init";
     }
-//    @GetMapping("/insert")
-//    public String insert() throws SQLException {
-//        log.info("hello");
-//        List<Linker> all = linkerRepository.findAll();
-//        for (int i = 0; i < 10; i++) {
-//            logRepository.save(new Log( all.get(i%10)));
-//        }
-//
-////        userService.save(new User((long) count++, "minseo", "qwer1234"));
-//        return "asd";
-//    }
-
-//    @GetMapping("/insert/{userCount}")
-//    public String insert(@PathVariable("userCount") int userCount) {
-//        log.info("insert into 작업 실행 : {}명의 유저 추가", userCount);
-//        List<Linker> all = linkerRepository.findAll();
-//        for (int i = 0; i < userCount; i++) {
-//            logRepository.save(new Log(all.get(i%10)));
-//        }
-//
-//        return "ok";
-//    }
-//
 
 
     /**
      * 순차 접근 [에이, 비]
      * 에스큐엘 *, 로그 아이디 본인이 설정
      */
-    @GetMapping("/select/sequence/{a}/{b}")
-    public String selectSequence(@PathVariable("a") int a, @PathVariable("b") int b) {
+    @GetMapping("/select/sequence/{begin}/{end}")
+    public String selectSequence(@PathVariable("begin") int a, @PathVariable("end") int b) {
         double diffTime = 0;
 
         String sql = "select * from logs where log_id between ? and ?";
@@ -116,8 +93,8 @@ public class RestController {
 
     // 스타트, 엔드는 문서에 써있음
     //
-    @GetMapping("/select/sequence/created-at/{start}/{end}")
-    public String selectSequence(@PathVariable("start") String start, @PathVariable("end") String end) {
+    @GetMapping("/select/sequence/created-at/{startTime}/{endTime}")
+    public String selectSequence(@PathVariable("startTime") String start, @PathVariable("endTime") String end) {
         double diffTime = 0;
 
         String sql = "select log_id from logs where created_at between ? and ?";
@@ -136,8 +113,8 @@ public class RestController {
      * 로그 테이블에서 해당 링커 아이디에 대한 정보 가져오기
      * 에스큐엘 *, 로그 아이디는 본인이 바꾸기
      */
-    @GetMapping("/select/random/linker")
-    public String selectIndexRandom() {
+    @GetMapping("/select/random/linker/{linkerId}")
+    public String selectIndexRandom(@PathVariable int linkerId) {
 
         double diffTime = 0.0;
         String sql = "select * from logs where linker_id = ?";
@@ -145,15 +122,14 @@ public class RestController {
         long endTIme = 0;
         Random random = new Random();
         int shardKey = 4;
-        long randomLinkerId = random.nextInt(2500) + 1;
-        if (randomLinkerId % shardKey == 0) {
-            salin07JdbcTemplate.queryForList(sql, randomLinkerId);
-        } else if (randomLinkerId % shardKey == 1) {
-            salin08JdbcTemplate.queryForList(sql, randomLinkerId);
-        } else if (randomLinkerId % shardKey == 2) {
-            salin09JdbcTemplate.queryForList(sql, randomLinkerId);
+        if (linkerId % shardKey == 0) {
+            salin07JdbcTemplate.queryForList(sql, linkerId);
+        } else if (linkerId % shardKey == 1) {
+            salin08JdbcTemplate.queryForList(sql, linkerId);
+        } else if (linkerId % shardKey == 2) {
+            salin09JdbcTemplate.queryForList(sql, linkerId);
         } else {
-            salin10JdbcTemplate.queryForList(sql, randomLinkerId);
+            salin10JdbcTemplate.queryForList(sql, linkerId);
         }
 
         endTIme = System.currentTimeMillis();
