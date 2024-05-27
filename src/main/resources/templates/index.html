@@ -69,7 +69,9 @@
         function executeQuery1(group, item, shard, useIndex) {
             showLoader(group, item);
             const input = document.getElementById(`input-${group}-${item}`).value;
-            const [begin, end] = input.split(',').map(Number);
+            let [begin, end] = input.split(',').map(Number);
+            begin = begin.trim();
+            end = end.trim();
             console.log(begin + ' ' + end);
             fetch(`/shard${shard}/${useIndex}/select/sequence/${begin}/${end}`)
                 .then(response => response.text())
@@ -87,7 +89,9 @@
         function executeQuery2(group, item, shard, useIndex) {
             showLoader(group, item);
             const input = document.getElementById(`input-${group}-${item}`).value;
-            const [startTime, endTime] = input.split(',').map(String);
+            let [startTime, endTime] = input.split(',').map(String);
+            startTime = startTime.trim();
+            endTime = endTime.trim();
             console.log(startTime + ' ' + endTime);
             fetch(`/shard${shard}/${useIndex}/select/sequence/created-at/${startTime}/${endTime}`)
                 .then(response => response.text())
@@ -105,7 +109,9 @@
         function executeQuery3(group, item, shard, useIndex) {
             showLoader(group, item);
             const input = document.getElementById(`input-${group}-${item}`).value;
-            const [linkerId] = input.split(',').map(Number);
+            let [linkerId] = input.split(',').map(Number);
+            linkerId = linkerId.trim();
+
             console.log(linkerId);
             fetch(`/shard${shard}/${useIndex}/select/random/linker/${linkerId}`)
                 .then(response => response.text())
@@ -123,7 +129,9 @@
         function executeQuery4(group, item, shard, useIndex) {
             showLoader(group, item);
             const input = document.getElementById(`input-${group}-${item}`).value;
-            const [type] = input.split(',').map(String);
+            let [type] = input.split(',').map(String);
+            type = type.trim();
+
             console.log(type);
             fetch(`/shard${shard}/${useIndex}/select/userForLogType/${type}`)
                 .then(response => response.text())
@@ -141,7 +149,9 @@
         function executeQuery5(group, item, shard, useIndex) {
             showLoader(group, item);
             const input = document.getElementById(`input-${group}-${item}`).value;
-            const [userId] = input.split(',').map(Number);
+            let [userId] = input.split(',').map(Number);
+            userId = userId.trim();
+
             console.log(userId);
             fetch(`/shard${shard}/${useIndex}/select/logForUser/${userId}`)
                 .then(response => response.text())
