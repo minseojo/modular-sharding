@@ -1,4 +1,4 @@
-# MySQL 기반 대용량 분산처리(Sharding 기법)에 대한 연구
+<img width="904" alt="스크린샷 2024-09-27 오전 1 18 19" src="https://github.com/user-attachments/assets/9d7caf00-66e7-4888-b048-c7047a924329"># MySQL 기반 대용량 분산처리(Sharding 기법)에 대한 연구
 
 ## 프로젝트 소개
 960만 개의 로그 데이터를 대상으로 모듈러 샤딩 알고리즘을 적용해 조회 쿼리 성능을 비교하고, 각 샤드 수(1, 2, 3개)에 따른 성능 차이를 분석한 프로젝트
@@ -35,7 +35,9 @@
 </br>
 
 ## 시스템 구성도
-<img width="800" alt="스크린샷 2024-09-14 오후 10 28 14" src="https://github.com/user-attachments/assets/172b4f96-077d-4775-9bdf-d69f1d93f6d2">
+<img width="800" alt="스크린샷 2024-09-27 오전 1 18 19" src="https://github.com/user-attachments/assets/871962ae-4093-424b-bc48-1856eb52d7a0">
+
+
 
 </br>
 </br>
